@@ -23,8 +23,14 @@ func main() {
 
 	render.NewTemplates(&config)
 
-	http.HandleFunc("/", handlers.Repo.Home)
-	http.HandleFunc("/about", handlers.Repo.About)
+	// http.HandleFunc("/", handlers.Repo.Home)
+	// http.HandleFunc("/about", handlers.Repo.About)
+	// http.ListenAndServe(":8080", nil)
 
-	http.ListenAndServe(":8080", nil)
+	/* Routing using pat */
+	srv := &http.Server{
+		Addr:    ":8080",
+		Handler: chiRoutes(&config),
+	}
+	srv.ListenAndServe()
 }
