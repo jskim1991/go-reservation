@@ -6,31 +6,38 @@ import (
 	"reservation/pkg/config"
 	"reservation/pkg/handlers"
 	"reservation/pkg/render"
+	"time"
+
+	"github.com/alexedwards/scs/v2"
 )
 
+var app config.AppConfig
+var sessionManager *scs.SessionManager
+
 func main() {
-	var config config.AppConfig
+	app.IsProduction = false
+	sessionManager = scs.New()
+	sessionManager.Lifetime = 30 * time.Minute
+	sessionManager.Cookie.Persist = true
+	sessionManager.Cookie.SameSite = http.SameSiteLaxMode
+	sessionManager.Cookie.Secure = app.IsProduction
+	app.SessionManager = sessionManager
 
 	tc, err := render.CreateTemplateCache()
 	if err != nil {
 		log.Fatal(err)
 	}
-	config.TemplateCache = tc
-	config.UseCache = false
+	app.TemplateCache = tc
+	app.UseCache = false
 
-	repo := handlers.NewRepo(&config)
+	repo := handlers.NewRepo(&app)
 	handlers.NewHandlers(repo)
 
-	render.NewTemplates(&config)
+	render.NewTemplates(&app)
 
-	// http.HandleFunc("/", handlers.Repo.Home)
-	// http.HandleFunc("/about", handlers.Repo.About)
-	// http.ListenAndServe(":8080", nil)
-
-	/* Routing using pat */
 	srv := &http.Server{
 		Addr:    ":8080",
-		Handler: chiRoutes(&config),
+		Handler: chiRoutes(&app),
 	}
 	srv.ListenAndServe()
 }
