@@ -1,0 +1,68 @@
+{{template "base" .}}
+
+{{define "content"}}
+        <div class="container">
+            <div class="row">
+                <div class="col">
+                    <h1 class="text-center mt-4">Make Reservation</h1>
+                    <form
+                        action=""
+                        method="post"
+                        class="needs-validation"
+                        novalidate
+                    >
+                        <div class="mt-5">
+                            <label for="first-name">First Name:</label>
+                            <input
+                                type="text"
+                                name="first-name"
+                                id="first-name"
+                                required
+                                autocomplete="off"
+                                class="form-control"
+                            />
+                        </div>
+                        <div>
+                            <label for="last-name">Last Name:</label>
+                            <input
+                                type="text"
+                                name="last-name"
+                                id="last-name"
+                                required
+                                autocomplete="off"
+                                class="form-control"
+                            />
+                        </div>
+                        <div>
+                            <label for="email">Email:</label>
+                            <input
+                                type="text"
+                                name="email"
+                                id="email"
+                                required
+                                autocomplete="off"
+                                class="form-control"
+                            />
+                        </div>
+                        <div>
+                            <label for="phone">Cell Phone:</label>
+                            <input
+                                type="text"
+                                name="phone"
+                                id="phone"
+                                required
+                                autocomplete="off"
+                                class="form-control"
+                            />
+                        </div>
+                        <hr />
+                        <input
+                            type="submit"
+                            class="btn btn-primary"
+                            value="Book Now"
+                        />
+                    </form>
+                </div>
+            </div>
+        </div>
+{{end}}

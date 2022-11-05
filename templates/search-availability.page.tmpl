@@ -1,0 +1,76 @@
+{{template "base" .}}
+
+{{define "content"}}
+        <div class="container">
+            <div class="row">
+                <div class="col-md-2"></div>
+                <div class="col">
+                    <h1 class="mt-5 text-center">Search for Availability</h1>
+                    <form
+                        action="reservation.html"
+                        method="get"
+                        class="needs-validation"
+                        novalidate
+                    >
+                        <div class="row">
+                            <div class="col">
+                                <div id="reservation-date" class="row">
+                                    <div class="col">
+                                        <input
+                                            required
+                                            type="text"
+                                            name="start"
+                                            class="form-control"
+                                            placeholder="Check-in date"
+                                            autocomplete="off"
+                                        />
+                                        <div class="valid-feedback">
+                                            Looks good!
+                                        </div>
+                                        <div class="invalid-feedback">
+                                            Select starting date
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <input
+                                            required
+                                            type="text"
+                                            name="end"
+                                            class="form-control"
+                                            placeholder="Check-out date"
+                                            autocomplete="off"
+                                        />
+                                        <div class="valid-feedback">
+                                            Looks good!
+                                        </div>
+                                        <div class="invalid-feedback">
+                                            Select ending date
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr />
+                        <button type="submit" class="btn btn-primary">
+                            Search
+                        </button>
+                    </form>
+                </div>
+                <div class="col-md-2"></div>
+            </div>
+        </div>
+{{end}}
+
+{{define "js"}}
+    <script>
+        const populateDateRangePicker = () => {
+            const element = document.getElementById('reservation-date')
+            const rangePicker = new DateRangePicker(element, {
+                format: 'yyyy-mm-dd',
+            })
+        }
+
+        populateDateRangePicker()
+    </script>
+{{end}}

@@ -1,4 +1,3 @@
-{{define "base"}}
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -20,8 +19,25 @@
             type="text/css"
             href="https://unpkg.com/notie/dist/notie.min.css"
         />
-        <link rel="stylesheet" type="text/css" href="/static/css/styles.css">
-        <title>Jay Stay</title>
+
+        <style>
+            .my-footer {
+                margin-top: 1.5rem;
+                background-color: #163b65;
+                padding: 1rem;
+                color: #fff;
+            }
+
+            .room-image {
+                max-width: 50%;
+            }
+
+            .notie-container {
+                box-shadow: none;
+            }
+        </style>
+
+        <title>Reservation</title>
     </head>
     <body>
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -47,12 +63,12 @@
                             <a
                                 class="nav-link active"
                                 aria-current="page"
-                                href="/"
+                                href="index.html"
                                 >Home</a
                             >
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/about">About</a>
+                            <a class="nav-link" href="about.html">About</a>
                         </li>
                         <li class="nav-item dropdown">
                             <a
@@ -68,33 +84,91 @@
                                 <li>
                                     <a
                                         class="dropdown-item"
-                                        href="/generals-quarters"
+                                        href="generals.html"
                                         >General's Quarters</a
                                     >
                                 </li>
                                 <li>
-                                    <a class="dropdown-item" href="/majors-suite"
+                                    <a class="dropdown-item" href="majors.html"
                                         >Major's Suite</a
                                     >
                                 </li>
                             </ul>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/search-availability"
+                            <a class="nav-link" href="reservation.html"
                                 >Book Now</a
                             >
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/contact">Contact</a>
+                            <a class="nav-link" href="contact.html">Contact</a>
                         </li>
                     </ul>
                 </div>
             </div>
         </nav>
-       {{block "content" .}}
 
-       {{end}}
-          <div class="row my-footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-2"></div>
+                <div class="col">
+                    <h1 class="mt-5 text-center">Search for Availability</h1>
+                    <form
+                        action="reservation.html"
+                        method="get"
+                        class="needs-validation"
+                        novalidate
+                    >
+                        <div class="row">
+                            <div class="col">
+                                <div id="reservation-date" class="row">
+                                    <div class="col">
+                                        <input
+                                            required
+                                            type="text"
+                                            name="start"
+                                            class="form-control"
+                                            placeholder="Check-in date"
+                                        />
+                                        <div class="valid-feedback">
+                                            Looks good!
+                                        </div>
+                                        <div class="invalid-feedback">
+                                            Select starting date
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <input
+                                            required
+                                            type="text"
+                                            name="end"
+                                            class="form-control"
+                                            placeholder="Check-out date"
+                                        />
+                                        <div class="valid-feedback">
+                                            Looks good!
+                                        </div>
+                                        <div class="invalid-feedback">
+                                            Select ending date
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr />
+                        <button type="submit" class="btn btn-primary">
+                            Search
+                        </button>
+                    </form>
+
+                    <button class="something-crazy">Hit me</button>
+                </div>
+                <div class="col-md-2"></div>
+            </div>
+        </div>
+
+        <div class="row my-footer">
             <div class="col">Left</div>
             <div class="col">Center</div>
             <div class="col">Right</div>
@@ -113,10 +187,6 @@
         <script src="https://cdn.jsdelivr.net/npm/vanillajs-datepicker@1.2.0/dist/js/datepicker-full.min.js"></script>
         <script src="https://unpkg.com/notie"></script>
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-       
-       {{block "js" .}}
-
-       {{end}}
 
         <script>
             'use strict'
@@ -219,6 +289,31 @@
             }
             const notification = prompt()
 
+            document
+                .querySelector('.something-crazy')
+                .addEventListener('click', () => {
+                    let html = `
+                    <form id="check-availability-form" action="" method="post" novalidate class="needs-validation">
+                        <div class="row">
+                            <div class="col">
+                                <div class="row" id="reservation-dates-modal">
+                                    <div class="col">
+                                        <input required class="form-control" type="text" name="start" id="start" placeholder="Check-in date" autocomplete="off"/>
+                                    </div>
+                                    <div class="col">
+                                        <input required class="form-control" type="text" name="end" id="end" placeholder="Check-out date" autocomplete="off" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    `
+                    notification.showDatepicker({
+                        title: 'Choose your dates',
+                        msg: html,
+                    })
+                })
+
             const validate = () => {
                 const forms = document.querySelectorAll('.needs-validation')
                 forms.forEach((form) => {
@@ -226,10 +321,17 @@
                         if (form.checkValidity() == false) {
                             e.preventDefault()
                             e.stopPropagation()
-                            
+                            // notify('Failed', 'error')
+                            // notification.success()
+                            // notification.toast({ msg: 'hello', icon: 'error' })
+                            // notification.success({
+                            //     title: 'title',
+                            //     text: 'text',
+                            //     confirmButtonText: 'confirm',
+                            // })
                             notification.error({
-                                title: 'Required inputs missing',
-                                text: 'Please enter values for all fields',
+                                title: 'title',
+                                text: 'text',
                                 confirmButtonText: 'confirm',
                             })
                         }
@@ -256,9 +358,16 @@
                     confirmButtonText,
                 })
             }
+
+            const populateDateRangePicker = () => {
+                const element = document.getElementById('reservation-date')
+                const rangePicker = new DateRangePicker(element, {
+                    format: 'yyyy-mm-dd',
+                })
+            }
+
+            populateDateRangePicker()
             validate()
         </script>
     </body>
 </html>
-
-{{end}}
