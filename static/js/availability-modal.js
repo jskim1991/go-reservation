@@ -1,46 +1,4 @@
-{{template "base" .}}
-
-{{define "content"}}
-<div class="container">
-            <div class="row">
-                <div
-                    class="col-lg-6 col-md-6 col-sm-12 col-xs-12 mx-auto d-block room-image"
-                >
-                    <img
-                        src="/static/images/generals-quarters.png"
-                        class="img-fluid img-thumbnail"
-                        alt="room image"
-                    />
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col">
-                    <h1 class="text-center mt-4">General's Quarters</h1>
-                    <p>
-                        Lorem ipsum dolor sit amet consectetur, adipisicing
-                        elit. Nihil exercitationem consectetur expedita nam
-                        totam non, necessitatibus numquam pariatur fugiat
-                        voluptatibus veniam sapiente labore dolores, fugit
-                        libero, explicabo eos rem impedit.
-                    </p>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col text-center">
-                    <a id="check-availability-button" href="/#!" class="btn btn-success"
-                        >Check Availability</a
-                    >
-                </div>
-            </div>
-        </div>
-
-{{end}}
-
-{{define "js"}}
-    <script>
-    document
+document
     .getElementById('check-availability-button')
     .addEventListener('click', (e) => {
         e.preventDefault()
@@ -76,6 +34,3 @@
             },
         })
     })
-
-    </script>
-{{end}}

@@ -1,11 +1,13 @@
 package main
 
 import (
+	"encoding/gob"
 	"log"
 	"net/http"
-	"reservation/pkg/config"
-	"reservation/pkg/handlers"
-	"reservation/pkg/render"
+	"reservation/internal/config"
+	"reservation/internal/handlers"
+	"reservation/internal/models"
+	"reservation/internal/render"
 	"time"
 
 	"github.com/alexedwards/scs/v2"
@@ -15,7 +17,9 @@ var app config.AppConfig
 var sessionManager *scs.SessionManager
 
 func main() {
-	app.IsProduction = false
+	gob.Register(models.Reservation{})
+
+	app.IsProduction = false // change this to true for production
 	sessionManager = scs.New()
 	sessionManager.Lifetime = 30 * time.Minute
 	sessionManager.Cookie.Persist = true

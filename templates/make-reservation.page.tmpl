@@ -5,54 +5,72 @@
             <div class="row">
                 <div class="col">
                     <h1 class="text-center mt-4">Make Reservation</h1>
+                    
+                    {{$res := index .Data "reservation"}}
                     <form
                         action=""
                         method="post"
-                        class="needs-validation"
                         novalidate
                     >
+                    <input type="hidden" name="csrf_token" value="{{.CSRFToken}}" />
                         <div class="mt-5">
                             <label for="first-name">First Name:</label>
+                            {{with .Form.Errors.Get "first-name"}}
+                                <label class="text-danger">{{.}}</label>
+                            {{end}}
                             <input
                                 type="text"
                                 name="first-name"
                                 id="first-name"
                                 required
                                 autocomplete="off"
-                                class="form-control"
+                                class="form-control {{with .Form.Errors.Get "first-name"}} is-invalid {{end}}"
+                                value="{{$res.FirstName}}"
                             />
                         </div>
                         <div>
                             <label for="last-name">Last Name:</label>
+                            {{with .Form.Errors.Get "last-name"}}
+                                <label class="text-danger">{{.}}</label>
+                            {{end}}
                             <input
                                 type="text"
                                 name="last-name"
                                 id="last-name"
                                 required
                                 autocomplete="off"
-                                class="form-control"
+                                class="form-control {{with .Form.Errors.Get "last-name"}} is-invalid {{end}}"
+                                value="{{$res.LastName}}"
                             />
                         </div>
                         <div>
                             <label for="email">Email:</label>
+                            {{with .Form.Errors.Get "email"}}
+                                <label class="text-danger">{{.}}</label>
+                            {{end}}
                             <input
                                 type="text"
                                 name="email"
                                 id="email"
                                 required
                                 autocomplete="off"
-                                class="form-control"
+                                class="form-control {{with .Form.Errors.Get "email"}} is-invalid {{end}}"
+                                value="{{$res.Email}}"
                             />
                         </div>
                         <div>
                             <label for="phone">Cell Phone:</label>
+                            {{with .Form.Errors.Get "phone"}}
+                                <label class="text-danger">{{.}}</label>
+                            {{end}}
                             <input
                                 type="text"
                                 name="phone"
                                 id="phone"
                                 required
                                 autocomplete="off"
-                                class="form-control"
+                                class="form-control {{with .Form.Errors.Get "phone"}} is-invalid {{end}}"
+                                value="{{$res.Phone}}"
                             />
                         </div>
                         <hr />
@@ -62,6 +80,7 @@
                             value="Book Now"
                         />
                     </form>
+
                 </div>
             </div>
         </div>

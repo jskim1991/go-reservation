@@ -7,11 +7,12 @@
                 <div class="col">
                     <h1 class="mt-5 text-center">Search for Availability</h1>
                     <form
-                        action="reservation.html"
-                        method="get"
+                        action="/search-availability"
+                        method="post"
                         class="needs-validation"
                         novalidate
                     >
+                        <input type="hidden" name="csrf_token" value="{{.CSRFToken}}" />
                         <div class="row">
                             <div class="col">
                                 <div id="reservation-date" class="row">
