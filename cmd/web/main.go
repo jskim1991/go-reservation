@@ -17,6 +17,13 @@ var app config.AppConfig
 var sessionManager *scs.SessionManager
 
 func main() {
+	err := run()
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
+func run() error {
 	gob.Register(models.Reservation{})
 
 	app.IsProduction = false // change this to true for production
@@ -30,6 +37,7 @@ func main() {
 	tc, err := render.CreateTemplateCache()
 	if err != nil {
 		log.Fatal(err)
+		return err
 	}
 	app.TemplateCache = tc
 	app.UseCache = false
@@ -44,4 +52,6 @@ func main() {
 		Handler: chiRoutes(&app),
 	}
 	srv.ListenAndServe()
+
+	return nil
 }
