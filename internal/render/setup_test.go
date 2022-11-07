@@ -2,6 +2,7 @@ package render
 
 import (
 	"encoding/gob"
+	"log"
 	"net/http"
 	"os"
 	"reservation/internal/config"
@@ -19,6 +20,11 @@ func TestMain(m *testing.M) {
 	gob.Register(models.Reservation{})
 
 	testApp.IsProduction = false // change this to true for production
+	infoLog := log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
+	testApp.InfoLog = infoLog
+	errorLog := log.New(os.Stdout, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
+	testApp.ErrorLog = errorLog
+
 	sessionManager = scs.New()
 	sessionManager.Lifetime = 30 * time.Minute
 	sessionManager.Cookie.Persist = true

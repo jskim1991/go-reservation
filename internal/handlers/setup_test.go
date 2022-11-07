@@ -5,6 +5,7 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+	"os"
 	"path/filepath"
 	"reservation/internal/config"
 	"reservation/internal/models"
@@ -25,6 +26,12 @@ func getRoutes() http.Handler {
 	gob.Register(models.Reservation{})
 
 	app.IsProduction = false // change this to true for production
+
+	infoLog := log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
+	app.InfoLog = infoLog
+	errorLog := log.New(os.Stdout, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
+	app.ErrorLog = errorLog
+
 	sessionManager = scs.New()
 	sessionManager.Lifetime = 30 * time.Minute
 	sessionManager.Cookie.Persist = true
