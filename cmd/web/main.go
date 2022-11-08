@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os"
 	"reservation/internal/config"
+	"reservation/internal/driver"
 	"reservation/internal/handlers"
 	"reservation/internal/helpers"
 	"reservation/internal/models"
@@ -21,14 +22,25 @@ var infoLog *log.Logger
 var errorLog *log.Logger
 
 func main() {
-	err := run()
+	db, err := run()
 	if err != nil {
 		log.Fatal(err)
 	}
+	defer db.SQL.Close()
+
+	srv := &http.Server{
+		Addr:    ":8080",
+		Handler: chiRoutes(&app),
+	}
+	srv.ListenAndServe()
 }
 
-func run() error {
+func run() (*driver.DB, error) {
 	gob.Register(models.Reservation{})
+	gob.Register(models.User{})
+	gob.Register(models.Room{})
+	gob.Register(models.Restriction{})
+	gob.Register(models.RoomRestriction{})
 
 	app.IsProduction = false // change this to true for production
 
@@ -44,26 +56,27 @@ func run() error {
 	sessionManager.Cookie.Secure = app.IsProduction
 	app.SessionManager = sessionManager
 
+	db, err := driver.ConnectSQL("host=localhost port=5432 dbname=bookings user=postgres password=")
+	if err != nil {
+		log.Fatal("Cannot connect to DB")
+		return nil, err
+	}
+
 	tc, err := render.CreateTemplateCache()
 	if err != nil {
 		log.Fatal(err)
-		return err
+		return nil, err
 	}
 	app.TemplateCache = tc
 	app.UseCache = false
 
-	repo := handlers.NewRepo(&app)
+	repo := handlers.NewRepo(&app, db)
 	handlers.NewHandlers(repo)
 
-	render.NewTemplates(&app)
+	render.NewRenderer(&app)
 
 	helpers.NewHelpers(&app)
 
-	srv := &http.Server{
-		Addr:    ":8080",
-		Handler: chiRoutes(&app),
-	}
-	srv.ListenAndServe()
 
-	return nil
+	return db, nil
 }
