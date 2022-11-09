@@ -1,7 +1,7 @@
 {{template "base" .}}
 
 {{define "content"}}
-<div class="container">
+        <div class="container">
             <div class="row">
                 <div
                     class="col-lg-6 col-md-6 col-sm-12 col-xs-12 mx-auto d-block room-image"
@@ -37,5 +37,60 @@
         </div>
 {{end}}
 {{define "js"}}
-    <script src="/static/js/availability-modal.js"></script>
+    <script>
+    document
+    .getElementById('check-availability-button')
+    .addEventListener('click', (e) => {
+        e.preventDefault()
+        let html = `
+                    <form id="check-availability-form" action="" method="post" novalidate class="needs-validation">
+                        <div class="row">
+                            <div class="col">
+                                <div class="row" id="reservation-dates-modal">
+                                    <div class="col">
+                                        <input required class="form-control" type="text" name="start" id="start" placeholder="Check-in date" autocomplete="off"/>
+                                    </div>
+                                    <div class="col">
+                                        <input required class="form-control" type="text" name="end" id="end" placeholder="Check-out date" autocomplete="off" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    `
+        notification.showDatepicker({
+            title: 'Choose your dates',
+            msg: html,
+            callback: async (result) => {
+                const form = document.getElementById('check-availability-form')
+                const formData = new FormData(form)
+                formData.append('csrf_token', '{{.CSRFToken}}')
+                formData.append('room_id', '2')
+
+                const response = await axios.post(
+                    '/search-availability-json',
+                    formData
+                )
+                const { data } = response
+
+                const {ok} = data
+                if (ok) {
+                    notification.custom({
+                        icon: 'success',
+                        showConfirmButton: false,
+                        msg: '<p>Room is available</p>' +
+                        `<p><a href="/book-room?id=${data.room_id}&s=${data.start_date}&e=${data.end_date}" class="btn btn-primary">Book now!</a></p>`,
+                    })
+                } else {
+                    notification.error({
+                        title: 'Error', 
+                        text: 'Not available', 
+                        confirmButtonText: 'Ok'
+                    })
+                }
+            },
+        })
+    })
+
+    </script>
 {{end}}

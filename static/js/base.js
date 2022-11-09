@@ -43,6 +43,35 @@ const prompt = () => {
         })
     }
 
+    const custom = async (c) => {
+        const { icon = '', title = '', msg = '', showConfirmButton = true } = c
+        const { value: result } = await Swal.fire({
+            title,
+            html: msg,
+            icon,
+            backdrop: false,
+            focusConfirm: false,
+            showCancelButton: true,
+            showConfirmButton: showConfirmButton,
+            willOpen: () => {
+                if (c.willOpen !== undefined) {
+                    c.willOpen()
+                }
+            },
+            preConfirm: () => {
+                return [
+                    document.getElementById('start').value,
+                    document.getElementById('end').value,
+                ]
+            },
+            didOpen: () => {
+                if (c.didOpen !== undefined) {
+                    c.didOpen()
+                }
+            },
+        })
+    }
+
     const showDatepicker = async (c) => {
         const { msg = '', title = '' } = c
         const { value: result } = await Swal.fire({
@@ -58,6 +87,7 @@ const prompt = () => {
                         format: 'yyyy-mm-dd',
                         showOnFocus: false,
                         autohide: true,
+                        minDate: new Date(),
                     }
                 )
             },
@@ -77,7 +107,7 @@ const prompt = () => {
             if (result.dismiss === Swal.DismissReason.cancel) {
                 return
             }
-            if (result.value === "") {
+            if (result.value === '') {
                 return
             }
             if (c.callback === undefined) {
@@ -94,6 +124,7 @@ const prompt = () => {
         toast,
         success,
         error,
+        custom,
         showDatepicker,
     }
 }
@@ -135,7 +166,6 @@ const showModal = (title, text, icon, confirmButtonText) => {
         confirmButtonText,
     })
 }
-
 
 const notification = prompt()
 validate()

@@ -1,7 +1,7 @@
 {{template "base" .}}
 
 {{define "content"}}
-<div class="container">
+        <div class="container">
             <div class="row">
                 <div
                     class="col-lg-6 col-md-6 col-sm-12 col-xs-12 mx-auto d-block room-image"
@@ -67,12 +67,29 @@
                 const form = document.getElementById('check-availability-form')
                 const formData = new FormData(form)
                 formData.append('csrf_token', '{{.CSRFToken}}')
+                formData.append('room_id', '1')
 
                 const response = await axios.post(
                     '/search-availability-json',
                     formData
                 )
-                console.log(response.data)
+                const { data } = response
+
+                const {ok} = data
+                if (ok) {
+                    notification.custom({
+                        icon: 'success',
+                        showConfirmButton: false,
+                        msg: '<p>Room is available</p>' +
+                        `<p><a href="/book-room?id=${data.room_id}&s=${data.start_date}&e=${data.end_date}" class="btn btn-primary">Book now!</a></p>`,
+                    })
+                } else {
+                    notification.error({
+                        title: 'Error', 
+                        text: 'Not available', 
+                        confirmButtonText: 'Ok'
+                    })
+                }
             },
         })
     })
