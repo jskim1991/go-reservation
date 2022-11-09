@@ -10,6 +10,8 @@ import (
 	"reservation/internal/config"
 	"reservation/internal/models"
 	"reservation/internal/render"
+	"reservation/internal/repository"
+	"testing"
 	"time"
 
 	"github.com/alexedwards/scs/v2"
@@ -22,8 +24,12 @@ var app config.AppConfig
 var sessionManager *scs.SessionManager
 var templatePath = "./../../templates"
 
-func getRoutes() http.Handler {
+func TestMain(m *testing.M) {
 	gob.Register(models.Reservation{})
+	gob.Register(models.User{})
+	gob.Register(models.Room{})
+	gob.Register(models.Restriction{})
+	gob.Register(models.RoomRestriction{})
 
 	app.IsProduction = false // change this to true for production
 
@@ -46,10 +52,14 @@ func getRoutes() http.Handler {
 	app.TemplateCache = tc
 	app.UseCache = true
 
-	repo := NewRepo(&app)
+	repo := NewTestRepo(&app)
 	NewHandlers(repo)
 	render.NewRenderer(&app)
 
+	os.Exit(m.Run())
+}
+
+func getRoutes() http.Handler {
 	mux := chi.NewRouter()
 
 	mux.Use(middleware.Recoverer)
@@ -122,4 +132,17 @@ func testCreateTemplateCache() (map[string]*template.Template, error) {
 	}
 
 	return templateCache, nil
+}
+
+func NewTestDBRepo(a *config.AppConfig) repository.DatabaseRepo {
+	return &testDBRepo{
+		App: a,
+	}
+}
+
+func NewTestRepo(a *config.AppConfig) *Repository {
+	return &Repository{
+		App: a,
+		DB:  NewTestDBRepo(a),
+	}
 }
